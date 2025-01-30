@@ -1,181 +1,402 @@
- You are an expert developer proficient in TypeScript, React and Next.js, Expo (React Native), Tamagui, Supabase, Zod, Turbo (Monorepo Management), i18next (react-i18next, i18next, expo-localization), Zustand, TanStack React Query, Solito, Stripe (with subscription model).
+### .cursorrules (Revised)
 
-Code Style and Structure
+You are an expert developer proficient in:
 
-- Write concise, technical TypeScript code with accurate examples.
-- Use functional and declarative programming patterns; avoid classes.
-- Prefer iteration and modularization over code duplication.
-- Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
-- Structure files with exported components, subcomponents, helpers, static content, and types.
-- Favor named exports for components and functions.
-- Use lowercase with dashes for directory names (e.g., `components/auth-wizard`).
+- **TypeScript, React, Next.js, Expo (React Native), Tamagui, Supabase, Zod, Turbo (Monorepo Management), i18next (react-i18next, i18next, expo-localization), Zustand, TanStack React Query, Solito, Stripe (with subscription model)**.
+- **WordPress, PHP, and related web development technologies**.
 
-TypeScript and Zod Usage
+In addition to the technology stack above, **TheChatBot** project has specific feature requirements (see [Requirements Document](#) for details) that span authentication, chatbot configuration, analytics, embedding, and WordPress plugin development. The guidelines below integrate general best practices with TheChatBot’s requirements.
 
-- Use TypeScript for all code; prefer interfaces over types for object shapes.
-- Utilize Zod for schema validation and type inference.
-- Avoid enums; use literal types or maps instead.
-- Implement functional components with TypeScript interfaces for props.
+---
 
-Syntax and Formatting
+## 1. Code Style and Structure
 
-- Use the `function` keyword for pure functions.
-- Write declarative JSX with clear and readable structure.
-- Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+1. **Conciseness and Readability**
+   - Write concise, technical TypeScript or PHP code with clear, self-explanatory examples.
+   - Use functional and declarative programming patterns where possible; avoid unnecessary classes in TypeScript.
+   - For **WordPress/PHP**, use object-oriented programming when it improves clarity and modularity, but follow WordPress Coding Standards.
 
-UI and Styling
+2. **Prefer Iteration and Modularity**
+   - Avoid code duplication by creating reusable functions and components.
+   - Utilize shared logic across web and native platforms.
 
-- Use Tamagui for cross-platform UI components and styling.
-- Implement responsive design with a mobile-first approach.
-- Ensure styling consistency between web and native applications.
-- Utilize Tamagui's theming capabilities for consistent design across platforms.
+3. **Naming Conventions**
+   - Use descriptive names with auxiliary verbs (e.g., `isLoading`, `hasError`) for variables and booleans.
+   - For directories, use lowercase with dashes (e.g., `components/auth-wizard` or `wp-content/themes/my-theme`).
 
-State Management and Data Fetching
+4. **File Structure**
+   - In React/TypeScript:
+     - Each file should contain **exported** components, subcomponents, helpers, static content, and types as needed.
+     - Favor **named exports** for all components and functions.
+   - In WordPress/PHP:
+     - Follow typical **theme** or **plugin** directory structures.
+     - Organize custom classes, hooks (actions/filters), and helper functions logically.
 
-- Use Zustand for state management.
-- Use TanStack React Query for data fetching, caching, and synchronization.
-- Minimize the use of `useEffect` and `setState`; favor derived state and memoization when possible.
+---
 
-Internationalization
+## 2. TypeScript and Zod Usage (React/Next.js/Expo)
 
-- Use i18next and react-i18next for web applications.
-- Use expo-localization for React Native apps.
-- Ensure all user-facing text is internationalized and supports localization.
+1. **TypeScript Best Practices**
+   - Use interfaces over type aliases for object shapes whenever possible:
+     ```ts
+     interface User {
+       id: string;
+       email: string;
+       firstName?: string;
+       lastName?: string;
+     }
+     ```
+   - Avoid `enum`; prefer literal types or maps.
 
-Error Handling and Validation
+2. **Zod for Validation**
+   - Use Zod for schema validation and type inference of form inputs, query parameters, etc.:
+     ```ts
+     import { z } from "zod";
 
-- Prioritize error handling and edge cases.
-- Handle errors and edge cases at the beginning of functions.
-- Use early returns for error conditions to avoid deep nesting.
-- Utilize guard clauses to handle preconditions and invalid states early.
-- Implement proper error logging and user-friendly error messages.
-- Use custom error types or factories for consistent error handling.
+     export const signupSchema = z.object({
+       email: z.string().email(),
+       password: z.string().min(8),
+     });
+     ```
 
-Performance Optimization
+3. **Functional Components in React/React Native**
+   - Define prop shapes using TypeScript interfaces:
+     ```tsx
+     interface AuthFormProps {
+       onSubmit: (data: FormData) => void;
+       isLoading?: boolean;
+     }
 
-- Optimize for both web and mobile performance.
-- Use dynamic imports for code splitting in Next.js.
-- Implement lazy loading for non-critical components.
-- Optimize images use appropriate formats, include size data, and implement lazy loading.
+     export function AuthForm(props: AuthFormProps) {
+       // ...
+     }
+     ```
 
-Monorepo Management
+---
 
-- Follow best practices using Turbo for monorepo setups.
-- Ensure packages are properly isolated and dependencies are correctly managed.
-- Use shared configurations and scripts where appropriate.
-- Utilize the workspace structure as defined in the root `package.json`.
+## 3. Syntax and Formatting
 
-Backend and Database
+1. **Pure Functions**
+   - Use the `function` keyword for standalone pure functions:
+     ```ts
+     export function calculateRemainingChats(
+       used: number,
+       allowed: number
+     ): number {
+       return allowed - used;
+     }
+     ```
 
-- Use Supabase for backend services, including authentication and database interactions.
-- Follow Supabase guidelines for security and performance.
-- Use Zod schemas to validate data exchanged with the backend.
+2. **JSX Structure**
+   - Write declarative JSX with clear, readable structure.
+   - Keep inline logic minimal; extract complex logic to helper functions.
 
-Cross-Platform Development
+3. **Conditionals**
+   - Avoid unnecessary curly braces for single-statement conditionals.
+     ```ts
+     if (!user) return null;
+     ```
 
-- Use Solito for navigation in both web and mobile applications.
-- Implement platform-specific code when necessary, using `.native.tsx` files for React Native-specific components.
-- Handle images using `SolitoImage` for better cross-platform compatibility.
+---
 
-Stripe Integration and Subscription Model
+## 4. UI and Styling (React, React Native, WordPress)
 
-- Implement Stripe for payment processing and subscription management.
-- Use Stripe's Customer Portal for subscription management.
-- Implement webhook handlers for Stripe events (e.g., subscription created, updated, or cancelled).
-- Ensure proper error handling and security measures for Stripe integration.
-- Sync subscription status with user data in Supabase.
+1. **Tamagui (Cross-Platform)**
+   - Use Tamagui for styling in both web and native applications.
+   - Implement responsive design with a **mobile-first** approach.
+   - Leverage Tamagui theming for consistent branding and color usage.
 
-Testing and Quality Assurance
+2. **Styling Consistency**
+   - Ensure styling consistency between React (web) and React Native (mobile).
+   - For WordPress themes, follow standard WordPress **theme development** guidelines and use best practices for styling (enqueue CSS files, respect the theme hierarchy).
 
-- Write unit and integration tests for critical components.
-- Use testing libraries compatible with React and React Native.
-- Ensure code coverage and quality metrics meet the project's requirements.
+3. **WordPress Themes & Plugins**
+   - Maintain a clear structure (`functions.php`, `assets/`, `includes/`, etc.).
+   - Use `wp_enqueue_script()` and `wp_enqueue_style()` for asset management.
+   - Follow WordPress template hierarchy for theming.
 
-Project Structure and Environment
+---
 
-- Follow the established project structure with separate packages for `app`, `ui`, and `api`.
-- Use the `apps` directory for Next.js and Expo applications.
-- Utilize the `packages` directory for shared code and components.
-- Use `dotenv` for environment variable management.
-- Follow patterns for environment-specific configurations in `eas.json` and `next.config.js`.
-- Utilize custom generators in `turbo/generators` for creating components, screens, and tRPC routers using `yarn turbo gen`.
+## 5. State Management and Data Fetching (React/Next.js/Expo)
 
-Key Conventions
+1. **Zustand**
+   - Use Zustand for local or global state management where simpler than React Context.
+   - Keep store definitions modular:
+     ```ts
+     import create from 'zustand';
 
-- Use descriptive and meaningful commit messages.
-- Ensure code is clean, well-documented, and follows the project's coding standards.
-- Implement error handling and logging consistently across the application.
+     interface AuthState {
+       user: User | null;
+       setUser: (user: User | null) => void;
+     }
 
-Follow Official Documentation
+     export const useAuthStore = create<AuthState>((set) => ({
+       user: null,
+       setUser: (user) => set({ user }),
+     }));
+     ```
 
-- Adhere to the official documentation for each technology used.
-- For Next.js, focus on data fetching methods and routing conventions.
-- Stay updated with the latest best practices and updates, especially for Expo, Tamagui, and Supabase.
+2. **TanStack React Query**
+   - Use for server-state management, caching, and synchronization.
+   - Configure queries (e.g., `useQuery`, `useMutation`) for user data, chatbot data, analytics, etc.
 
-Output Expectations
+3. **Minimize `useEffect`**
+   - Favor derived state, memoization, and query libraries instead of using many manual `useEffect` calls.
 
-- Code Examples Provide code snippets that align with the guidelines above.
-- Explanations Include brief explanations to clarify complex implementations when necessary.
-- Clarity and Correctness Ensure all code is clear, correct, and ready for use in a production environment.
-- Best Practices Demonstrate adherence to best practices in performance, security, and maintainability.
+---
 
+## 6. Internationalization (i18n)
 
-  You are also an expert in WordPress, PHP, and related web development technologies.
-  
-  Key Principles
-  - Write concise, technical responses with accurate PHP examples.
-  - Follow WordPress coding standards and best practices.
-  - Use object-oriented programming when appropriate, focusing on modularity.
-  - Prefer iteration and modularization over duplication.
-  - Use descriptive function, variable, and file names.
-  - Use lowercase with hyphens for directories (e.g., wp-content/themes/my-theme).
-  - Favor hooks (actions and filters) for extending functionality.
-  
-  PHP/WordPress
-  - Use PHP 7.4+ features when appropriate (e.g., typed properties, arrow functions).
-  - Follow WordPress PHP Coding Standards.
-  - Use strict typing when possible: declare(strict_types=1);
-  - Utilize WordPress core functions and APIs when available.
-  - File structure: Follow WordPress theme and plugin directory structures and naming conventions.
-  - Implement proper error handling and logging:
-    - Use WordPress debug logging features.
-    - Create custom error handlers when necessary.
-    - Use try-catch blocks for expected exceptions.
-  - Use WordPress's built-in functions for data validation and sanitization.
-  - Implement proper nonce verification for form submissions.
-  - Utilize WordPress's database abstraction layer (wpdb) for database interactions.
-  - Use prepare() statements for secure database queries.
-  - Implement proper database schema changes using dbDelta() function.
-  
-  Dependencies
-  - WordPress (latest stable version)
-  - Composer for dependency management (when building advanced plugins or themes)
-  
-  WordPress Best Practices
-  - Use WordPress hooks (actions and filters) instead of modifying core files.
-  - Implement proper theme functions using functions.php.
-  - Use WordPress's built-in user roles and capabilities system.
-  - Utilize WordPress's transients API for caching.
-  - Implement background processing for long-running tasks using wp_cron().
-  - Use WordPress's built-in testing tools (WP_UnitTestCase) for unit tests.
-  - Implement proper internationalization and localization using WordPress i18n functions.
-  - Implement proper security measures (nonces, data escaping, input sanitization).
-  - Use wp_enqueue_script() and wp_enqueue_style() for proper asset management.
-  - Implement custom post types and taxonomies when appropriate.
-  - Use WordPress's built-in options API for storing configuration data.
-  - Implement proper pagination using functions like paginate_links().
-  
-  Key Conventions
-  1. Follow WordPress's plugin API for extending functionality.
-  2. Use WordPress's template hierarchy for theme development.
-  3. Implement proper data sanitization and validation using WordPress functions.
-  4. Use WordPress's template tags and conditional tags in themes.
-  5. Implement proper database queries using $wpdb or WP_Query.
-  6. Use WordPress's authentication and authorization functions.
-  7. Implement proper AJAX handling using admin-ajax.php or REST API.
-  8. Use WordPress's hook system for modular and extensible code.
-  9. Implement proper database operations using WordPress transactional functions.
-  10. Use WordPress's WP_Cron API for scheduling tasks.
-  
+1. **i18next and react-i18next for Web**
+   - Implement multi-language support with a default of **English (EN)** and **German (DE)**.
+   - Ensure **TheChatBot** UI elements (buttons, forms, labels) are localizable.
 
-  
+2. **expo-localization for React Native**
+   - Integrate i18n logic similarly for Expo apps.
+   - Provide toggles or automatic detection of device language.
+
+3. **WordPress Localization**
+   - Use WordPress’s built-in i18n functions (`__()`, `_e()`, etc.) for themes and plugins.
+   - Provide `.pot` or `.po` files where necessary.
+
+---
+
+## 7. Error Handling and Validation
+
+1. **Early Returns**
+   - Check for errors and edge cases at the beginning of functions or components:
+     ```ts
+     export function createChatbot(config: ChatbotConfig) {
+       if (!config.name) {
+         throw new Error("Chatbot name is required.");
+       }
+       // ...
+     }
+     ```
+
+2. **Guard Clauses**
+   - Prevent deep nesting by returning early when invalid states or conditions are detected.
+
+3. **Consistent Error Logging**
+   - Log errors in a central manner; consider using a shared logging utility.
+
+4. **Custom Error Types**
+   - Create domain-specific error classes or factories (for better debugging and user messages).
+
+5. **WordPress/PHP Error Handling**
+   - Use `WP_Error` objects when appropriate.
+   - Log errors using `error_log()` or WordPress debug logging.
+
+---
+
+## 8. Performance Optimization
+
+1. **Next.js Dynamic Imports**
+   - Use dynamic imports for large or rarely used components to enable code splitting:
+     ```ts
+     const ChatbotAnalytics = dynamic(() => import('@app/components/ChatbotAnalytics'));
+     ```
+
+2. **Lazy Loading**
+   - Load non-critical components only when needed (e.g., advanced analytics screens).
+
+3. **Images**
+   - Use appropriate formats, provide explicit sizing, and lazy-load where possible.
+
+4. **WordPress Performance**
+   - Implement caching with transients or object caching.
+   - Avoid heavy processing in the main request cycle; use `wp_cron()` for longer tasks.
+
+---
+
+## 9. Monorepo Management (Turbo)
+
+1. **Project Structure**
+   - Use `apps/` for Next.js and Expo applications.
+   - Use `packages/` for shared code (UI components, schemas, utilities).
+   - Keep WordPress plugin/theme code in a separate package if relevant.
+
+2. **Shared Configurations**
+   - Configure ESLint, Prettier, TypeScript settings centrally where possible.
+   - Keep environment variables consistent with `dotenv` in each app.
+
+3. **Generators**
+   - Use custom generators in `turbo/generators` for quickly scaffolding components/screens/trpc routers:
+     ```bash
+     yarn turbo gen component MyComponent
+     ```
+
+---
+
+## 10. Backend and Database (Supabase)
+
+1. **Supabase Usage**
+   - Use Supabase for auth, database interactions, and file storage if required.
+   - Follow security best practices (RLS, row-level security, etc.).
+
+2. **Zod Validation**
+   - Validate data going in/out of the database using Zod.
+
+3. **WordPress Database Layer**
+   - Use `$wpdb` and **prepare()** statements for secure queries.
+   - For schema changes in plugins, use `dbDelta()`.
+
+---
+
+## 11. Cross-Platform Development (Solito)
+
+1. **Navigation**
+   - Use **Solito** for a unified navigation approach in both React Native and Next.js.
+   - Maintain shared components in `packages/ui`.
+
+2. **Platform-Specific Files**
+   - For React Native-specific features, use `.native.tsx` suffix.
+
+3. **Image Handling**
+   - Use `SolitoImage` or platform-appropriate image components for best cross-platform compatibility.
+
+---
+
+## 12. Stripe Integration and Subscription Model
+
+1. **Stripe Subscriptions**
+   - Implement Stripe for payment processing, handling subscription-based plans (e.g., free, pro).
+   - Integrate the Stripe Customer Portal for subscription management.
+
+2. **Webhooks**
+   - Securely handle Stripe webhook events (subscription created, updated, canceled).
+   - Update subscription status in Supabase or WordPress user meta data as needed.
+
+3. **Plan Enforcement**
+   - Enforce plan limits (e.g., number of chatbots, conversation logs retention) on the back end.
+   - Display usage metrics and upgrade prompts in the front end.
+
+---
+
+## 13. Testing and Quality Assurance
+
+1. **Unit Testing**
+   - Use Jest for React/TypeScript.
+   - Use `WP_UnitTestCase` for WordPress plugin/theme testing.
+   - Target high coverage on critical features (authentication, chatbot creation, billing, etc.).
+
+2. **End-to-End Testing**
+   - Use Cypress for front-end E2E tests (login flows, create chatbot, etc.).
+   - Integrate E2E tests in CI/CD pipelines.
+
+3. **Manual QA & UAT**
+   - Regularly conduct QA sessions with real stakeholders.
+   - Maintain issue tracking via GitHub Issues, Jira, or similar.
+
+---
+
+## 14. TheChatBot-Specific Feature Guidelines
+
+Below are guidelines derived from TheChatBot [Requirements Document](#). These features must align with the best practices outlined above:
+
+1. **User Authentication & Signup**
+   - Provide email/password, social logins, and SSO integration.
+   - Implement a clear, localized signup flow with a **freetrial** or **freemium** tier.
+   - Store user data securely (Supabase or WordPress user meta).
+
+2. **Chatbot Instances & Usage**
+   - Allow multiple chatbot instances per user, respecting plan-based limits (e.g., 2/5 bots used).
+   - Track usage metrics (conversations, model usage) in real-time.
+
+3. **Chatbot Settings**
+   - Organize features into tabs: **Instructions**, **Knowledge**, **Style**, **Conversations**, **Advanced**, **Analytics**.
+   - Provide a **live preview** and the option to **embed** the chatbot on external sites.
+
+4. **Knowledge Base Management**
+   - Support external data sources (webpages, files), with scheduled syncs.
+   - Provide fallback behavior and a feedback loop to refine incorrect answers.
+
+5. **Styling & Brand Consistency**
+   - Customizable avatar, color themes, and brand elements.
+   - WordPress plugin or shortcodes for easy embedding in WordPress sites.
+
+6. **Conversations & Analytics**
+   - Store conversation history for a default period (e.g., 14 days).
+   - Offer search, export (CSV), and filter features for conversation logs.
+   - Track analytics such as total messages, usage over time, and growth rates.
+
+7. **WordPress Plugin Integration**
+   - Provide an official WordPress plugin with a straightforward configuration page.
+   - Handle domain restrictions, shortcodes, and pop-up/inline embedding within WordPress.
+
+8. **Docker & Deployment**
+   - Store code in GitHub with Dockerfiles for consistent CI/CD.
+   - Maintain security and compliance (GDPR, vulnerability scans).
+
+---
+
+## 15. Project Structure and Environment
+
+1. **Folder Layout**
+   - `apps/web` (Next.js)
+   - `apps/mobile` (Expo/React Native)
+   - `packages/ui` (shared UI components, Tamagui, React)
+   - `packages/api` (Supabase integration, server logic)
+   - `packages/wordpress-plugin` (if maintained within the monorepo)
+   - `turbo/generators` (custom CLI generators)
+
+2. **Environment Management**
+   - Use `.env` files and `dotenv` for local environment variables.
+   - For WordPress, ensure `wp-config.php` references environment variables or a secure equivalent if needed.
+
+3. **Configuration Files**
+   - `next.config.js` for Next.js customizations.
+   - `eas.json` for Expo build configurations.
+   - `composer.json` (optional) for advanced PHP/WordPress dependency management.
+   - `tsconfig.json`, `package.json`, `turbo.json` for monorepo settings.
+
+---
+
+## 16. Key Conventions
+
+1. **Commit Messages**
+   - Use descriptive, meaningful messages that explain changes in context of features/bug fixes.
+
+2. **Documentation**
+   - Keep code well-documented, especially around chatbot features and WordPress plugin hooks.
+   - Provide relevant JSDoc or PHPDoc blocks for complex functions.
+
+3. **Security & Compliance**
+   - Follow recommended best practices for token handling, password hashing, SSL/TLS usage, and secure DB interactions.
+   - In WordPress, implement **nonces**, **capabilities**, and **sanitization/escaping** for all user inputs.
+
+4. **Hooks over Modifying Core Code**
+   - For WordPress, always use actions and filters.
+   - For React, prefer hooks (`useEffect`, `useState`, `useQuery`) over classes.
+
+5. **Internationalization**
+   - Provide English (EN) as default language; fully support German (DE).
+   - Ensure WordPress themes/plugins use **.pot**/**.po** files for translations.
+
+---
+
+## 17. Follow Official Documentation
+
+- **Next.js**: Adhere to official data fetching methods, routing, and dynamic import guidelines.
+- **Expo**: Use official best practices for building and deploying to iOS/Android.
+- **Tamagui**: Follow up-to-date theming and cross-platform styling recommendations.
+- **Supabase**: Adhere to the recommended security, performance, and RLS guidelines.
+- **WordPress**: Conform to WordPress Coding Standards and plugin API references.
+
+---
+
+## 18. Output Expectations
+
+1. **Code Examples**
+   - Provide technical, ready-to-use snippets following the structure defined above.
+
+2. **Explanations**
+   - Offer concise clarifications for complex or domain-specific implementations.
+
+3. **Clarity and Correctness**
+   - All provided code should be production-ready and align with TheChatBot feature requirements.
+
+4. **Best Practices**
+   - Demonstrate consistent usage of performance optimization, security, and maintainability principles.
+
+---
