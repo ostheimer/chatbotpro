@@ -18,6 +18,7 @@ This document captures the features and properties of **TheChatBot**, grouped by
    1. [WordPress Plugin](#121-wordpress-plugin)  
 7. [Code Hosting & Docker Deployment](#13-code-hosting--docker-deployment)  
 8. [Front-End vs. Back-End Feature Breakdown](#14-front-end-vs-back-end-feature-breakdown)  
+9. [Payment & Subscription Management](#15-payment--subscription-management)
 
 ---
 
@@ -115,9 +116,9 @@ When a user clicks on a chatbot (e.g., "Wallentin"), a detailed configuration an
 
 ### 5.1 Instructions
 
-- **Directive**: A text field allowing admins to describe the chatbot’s role, personality, and objectives.
+- **Directive**: A text field allowing admins to describe the chatbot’s role, personality, and objectives.  
   - **Pop Out**: Possibly expands the text area or opens a separate editor.
-- **Greeting**: The default opening message the chatbot uses when starting a conversation.
+- **Greeting**: The default opening message the chatbot uses when starting a conversation.  
   - **Generated vs. Custom**: Users can let the system auto-generate a greeting or provide a custom message.
 - **AI Model Selection**:
   - **OpenAI Authentication**: Shows the currently configured OpenAI account or API credentials.
@@ -311,6 +312,57 @@ Below is a general overview of how responsibilities are split:
 - **WordPress Plugin Endpoints** (if needed for retrieving chat content/config)
 
 This structure ensures a clear separation of concerns, letting the front-end focus on user experience and the back-end handle data, AI, and system logic.
+
+## 15. Payment & Subscription Management
+
+To allow users to pay, manage subscriptions, and receive invoices, we can integrate **Stripe** into the Next.js application. This setup can handle recurring payments, different subscription tiers (e.g., Free, Pro, Enterprise), and automated invoicing.
+
+### 15.1 Stripe Integration Approach
+- **Stripe Dashboard**: Create products, pricing plans, and subscription tiers.
+- **Server-Side Implementation**: Leverage Next.js API routes or a dedicated Node.js server to handle:
+  - **Customer Creation**: Link TheChatBot user accounts to Stripe customer records.
+  - **Subscription Management**: Create, update, or cancel subscriptions.
+  - **Webhook Handling**: Process Stripe events (e.g., payment succeeded, subscription renewed, invoice paid).
+- **Client-Side Checkout**:
+  - Use **Stripe.js** or **Stripe Checkout** to collect payment details.
+  - Optionally embed a "customer portal" so users can view payment history, update payment methods, or upgrade/downgrade their plan.
+
+### 15.2 Managing Subscription State
+- **Plan Enforcement**:
+  - Restrict feature access (e.g., number of chatbots, usage caps) based on the user’s current subscription tier.
+  - Update the user’s tier in the database as soon as a Stripe webhook confirms subscription changes.
+- **Billing History & Invoices**:
+  - Stripe automatically generates invoices for subscription payments.
+  - Surfaces these invoices in a "Billing" or "Subscription" section of the user’s account page.
+
+### 15.3 Automating Emails & Notifications
+- **Stripe’s Email Receipts**:
+  - Stripe can email customers upon successful payments and subscription events.
+- **Webhook-Triggered Notifications**:
+  - If a payment fails or a subscription is about to expire, your Next.js backend can send automated emails or in-app alerts to prompt user action.
+
+### 15.4 Implementation Steps
+1. **Configure Stripe**:
+   - Obtain API keys and set up products and pricing.
+   - Enable relevant webhooks.
+2. **Next.js API Routes**:
+   - `/api/stripe/create-checkout-session`: Creates a Stripe Checkout session for paid plans.
+   - `/api/stripe/webhooks`: Receives and processes webhook events.
+3. **Client-Side Flow**:
+   - A "Manage Subscription" or "Upgrade" button triggers the creation of a new Checkout session or opens the Stripe customer portal.
+   - On success, the user is redirected back to your site with updated subscription data.
+4. **Data Persistence**:
+   - Store relevant subscription info (plan tier, status, billing cycle) in your database for quick lookups.
+
+### 15.5 Future Enhancements
+- **Metered Billing**:
+  - If TheChatBot charges based on usage (e.g., number of messages), integrate Stripe’s metered billing.
+- **Discounts & Coupons**:
+  - Let business owners offer coupons for promotional campaigns.
+- **Proration & Tiered Pricing**:
+  - Adjust plan cost if users upgrade mid-cycle or handle tiered usage.
+
+---
 
 ## Final Notes
 
